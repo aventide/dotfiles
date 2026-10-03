@@ -1,0 +1,9 @@
+# User-space CLI tools shared by macOS and Bazzite Linux.
+brew "git"
+brew "zsh"
+brew "zellij"
+brew "zoxide"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "jq"
