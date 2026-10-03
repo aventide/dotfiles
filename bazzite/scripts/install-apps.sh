@@ -4,13 +4,13 @@ set -euo pipefail
 case "${1:-}" in
     '') check_only=false ;;
     --check) check_only=true ;;
-    *) echo 'Usage: bash scripts/bazzite/install-bazzite-apps.sh [--check]' >&2; exit 1 ;;
+    *) echo 'Usage: bash bazzite/scripts/install-apps.sh [--check]' >&2; exit 1 ;;
 esac
 [[ $# -le 1 && $EUID != 0 ]] || { echo 'Run as your regular user.' >&2; exit 1; }
 [[ -r /etc/os-release ]] && . /etc/os-release
 [[ ${ID:-} == bazzite ]] || { echo 'This installer is for Bazzite only.' >&2; exit 1; }
-repo_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
-manifest="$repo_dir/packages/bazzite-desktop-app.txt"
+bazzite_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+manifest="$bazzite_dir/packages/bazzite-desktop-app.txt"
 packages=()
 while IFS= read -r line || [[ -n "$line" ]]; do
     line=${line%%#*}
@@ -33,7 +33,7 @@ for package in "${packages[@]}"; do
     fi
 done
 [[ ${#missing[@]} -gt 0 ]] || { echo 'All native desktop packages are installed.'; exit 0; }
-[[ -r /etc/yum.repos.d/terra.repo ]] || { echo 'Bazzite Terra repository configuration is missing; see packages/bazzite.md.' >&2; exit 1; }
+[[ -r /etc/yum.repos.d/terra.repo ]] || { echo 'Bazzite Terra repository configuration is missing; see bazzite/README.md.' >&2; exit 1; }
 if "$check_only"; then
     echo 'Would enable the existing Terra repo and layer missing packages with rpm-ostree --idempotent.'
     echo 'Check only: no repository changes, downloads, sudo, or deployment changes.'
@@ -68,5 +68,5 @@ else:
 PY
 sudo rpm-ostree install --idempotent "${missing[@]}"
 echo 'Native package request completed. Reboot if a new deployment was staged, then run:'
-echo '  bash scripts/bazzite/setup-bazzite-vicinae.sh'
+echo '  bash bazzite/scripts/setup-vicinae.sh'
 echo 'This script does not reboot or replace an existing user-local/AppImage install.'

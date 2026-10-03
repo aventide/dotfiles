@@ -5,7 +5,7 @@ export GSETTINGS_BACKEND=dconf
 case "${1:-}" in
     '') check_only=false ;;
     --check) check_only=true ;;
-    *) echo 'Usage: bash scripts/bazzite/setup-bazzite-vicinae.sh [--check]' >&2; exit 1 ;;
+    *) echo 'Usage: bash bazzite/scripts/setup-vicinae.sh [--check]' >&2; exit 1 ;;
 esac
 [[ $# -le 1 && $EUID != 0 ]] || { echo 'Run in your desktop session as your regular user.' >&2; exit 1; }
 . /etc/os-release
@@ -13,7 +13,7 @@ esac
     echo 'This setup currently supports Bazzite GNOME on Wayland only.' >&2; exit 1;
 }
 script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-repo_dir=$(CDPATH= cd -- "$script_dir/../.." && pwd)
+bazzite_dir=$(CDPATH= cd -- "$script_dir/.." && pwd)
 for tool in /usr/bin/python3 gsettings systemctl gnome-shell gnome-extensions fc-match curl jq update-desktop-database xdg-mime; do
     command -v "$tool" >/dev/null || { echo "Missing prerequisite: $tool" >&2; exit 1; }
 done
@@ -23,14 +23,14 @@ for candidate in /usr/bin/vicinae "$(command -v vicinae || true)" "$HOME/.local/
     if [[ -n "$candidate" && -x "$candidate" ]]; then vicinae_binary=$candidate; break; fi
 done
 [[ -n "$vicinae_binary" ]] || {
-    echo 'Install Vicinae first: bash scripts/bazzite/install-bazzite-apps.sh (then reboot if needed).' >&2; exit 1;
+    echo 'Install Vicinae first: bash bazzite/scripts/install-apps.sh (then reboot if needed).' >&2; exit 1;
 }
 [[ "$(fc-match -f '%{family}' 'Adwaita Sans')" == *'Adwaita Sans'* ]] || {
     echo 'Adwaita Sans is not installed; install the GNOME font before applying.' >&2; exit 1;
 }
 # Preflight JSONC, shortcut conflicts, settings writability, and target paths
 # before downloading/installing an extension or modifying user preferences.
-/usr/bin/python3 "$script_dir/vicinae-settings.py" "$repo_dir/platforms/bazzite/vicinae/settings.json" "$vicinae_binary" --check
+/usr/bin/python3 "$script_dir/lib/vicinae-settings.py" "$bazzite_dir/config/vicinae/settings.json" "$vicinae_binary" --check
 if "$check_only"; then
     echo 'Check only: no settings changes, service changes, downloads, or sudo.'
     exit 0
@@ -61,7 +61,7 @@ if [[ ! -f "$extension_metadata" ]] || ! jq -e --arg version "$shell_version" '.
         gnome-extensions install "$temp_dir/vicinae.zip"
     fi
 fi
-/usr/bin/python3 "$script_dir/vicinae-settings.py" "$repo_dir/platforms/bazzite/vicinae/settings.json" "$vicinae_binary"
+/usr/bin/python3 "$script_dir/lib/vicinae-settings.py" "$bazzite_dir/config/vicinae/settings.json" "$vicinae_binary"
 update-desktop-database "${XDG_DATA_HOME:-$HOME/.local/share}/applications"
 for scheme in vicinae raycast com.raycast; do
     xdg-mime default vicinae-url-handler.desktop "x-scheme-handler/$scheme"

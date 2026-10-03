@@ -7,6 +7,8 @@ fail() {
     exit 1
 }
 
+[ "$#" -eq 0 ] || fail 'Usage: sh bazzite/scripts/apply-keyboard-repeat.sh (applies immediately; no --check mode)'
+
 [ "${XDG_SESSION_TYPE:-}" = wayland ] || fail 'Only Wayland sessions are supported; no settings changed.'
 
 # A short nonzero delay avoids accidental repeats. Edit to taste.

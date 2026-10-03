@@ -1,262 +1,66 @@
 # dotfiles
 
-Personal environment configuration for macOS and Bazzite Linux.
+Personal environment configuration for macOS and Bazzite Linux. Start with
+your platform's guide; it includes the shared setup in the appropriate order.
 
-## Current contents
+- [Bazzite setup](bazzite/README.md)
+- [macOS setup](macos/README.md)
+- [Shared Zsh, SPQR, and Zellij setup](shared/README.md)
 
-```text
-dotfiles/
-├── README.md
-├── packages/
-│   ├── common-cli.Brewfile
-│   ├── macos.Brewfile
-│   ├── bazzite.Brewfile
-│   ├── bazzite-desktop-app.txt
-│   └── bazzite.md
-├── shared/
-│   ├── zellij/
-│   │   └── config.kdl
-│   └── zsh/
-│       ├── .zshrc
-│       └── themes/SPQR.zsh-theme
-├── platforms/
-│   └── bazzite/
-│       ├── keyd/keychron-link.conf
-│       ├── ghostty/config
-│       └── vicinae/settings.json
-└── scripts/
-    └── bazzite/
-        ├── apply-bazzite-keyboard.sh
-        ├── keyboard.sh
-        ├── install-bazzite-apps.sh
-        ├── setup-bazzite-vicinae.sh
-        ├── vicinae-settings.py
-        └── tests/test_vicinae_settings.py
-```
+Run documented commands from the repository root unless stated otherwise.
+Homebrew must already be installed. Cloning the repo does not apply settings.
 
-The Zellij config includes the embedded SPQR theme, keybindings, and built-in
-plugin aliases. It is copied from the active config, not either backup.
-No separate theme file or external plugins are required. The source machine
-uses Zellij 0.42.2; matching that version is the safest initial setup.
-
-## Install packages
-
-Homebrew must already be installed on the target machine. Package installation
-is separate from config installation: these manifests do not install dotfiles,
-Oh My Zsh, or change your login shell.
-
-- `packages/common-cli.Brewfile`: shared user-space CLI tools for macOS and
-  Bazzite Linux: git, GitHub CLI (`gh`), zsh, zellij,
-  zoxide, fzf, ripgrep, fd, and jq.
-- `packages/macos.Brewfile`: includes the shared list and adds the Ghostty cask.
-- `packages/bazzite.Brewfile`: includes the shared list and adds the unofficial
-  Bitwarden CLI `rbw` on Bazzite only. Authentication is configured locally.
-- `packages/bazzite-desktop-app.txt`: native desktop RPMs, currently Vicinae.
-  These are installed separately from Homebrew through the Bazzite scripts.
-
-From the repository root, run the command for your platform:
-
-```sh
-# macOS
-brew bundle --file=packages/macos.Brewfile
-
-# Bazzite Linux
-brew bundle --file=packages/bazzite.Brewfile
-```
-
-Each platform manifest loads the common file relative to its own location.
-To install only the shared tools, use
-`brew bundle --file=packages/common-cli.Brewfile`.
-
-These are desired-package lists, not exact version locks; Homebrew installs
-currently available versions. In particular, the Zellij version may differ
-from the original config's 0.42.2. Formula support can differ by platform.
-No cleanup/removal of unlisted packages is requested by these commands.
-
-Ghostty supports Linux, but its Homebrew cask does not. Install Ghostty on
-Bazzite separately using a suitable Linux installation method. Likewise, keyd
-requires separate host-level installation and service setup; it is not covered
-by the Brewfiles. See [Bazzite setup notes](packages/bazzite.md) for the
-Ghostty AppImage + Homebrew Zellij launcher setup. Apply those steps before
-the first desktop launch to avoid depending on the GUI session's PATH.
-
-## Install Zellij config
-
-From the repository root, after installing Zellij:
-
-```sh
-mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/zellij"
-cp -i shared/zellij/config.kdl "${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl"
-```
-
-Back up an existing config first. `cp -i` asks before overwriting it.
-Start a fresh Zellij session after installation.
-
-Clipboard copying uses the terminal's OSC 52 support, with no OS-specific
-clipboard command enabled. If copying fails, check terminal support before
-adding a platform-specific command such as `pbcopy`, `wl-copy`, or `xclip`.
-
-
-## Install zsh configuration
-
-`shared/zsh/.zshrc` is a shared interactive-shell config for macOS and Linux.
-It enables the git plugin and SPQR theme through Oh My Zsh, persistent history
-(50,000 entries), shared history between local sessions, your existing aliases,
-fzf keybindings, and zoxide when installed. NVM, Fabric, and Zellij auto-start
-are not included. Homebrew is discovered using standard macOS/Linux paths when
-it is not already on PATH.
-
-Install Oh My Zsh separately, normally at `~/.oh-my-zsh`, and use a font with
-Powerline glyphs (such as a Nerd Font). A custom Oh My Zsh installation can be
-selected by exporting `ZSH` before starting the shell.
-
-From the repository root, back up an existing `~/.zshrc`, then symlink the config:
-
-```sh
-# Run this only when ~/.zshrc exists; choose an unused backup name.
-mv ~/.zshrc ~/.zshrc.before-dotfiles
-ln -s "$PWD/shared/zsh/.zshrc" "$HOME/.zshrc"
-```
-
-If there is no existing `.zshrc`, skip the `mv` command. Keep the checkout in
-place and open a new zsh session. No active shell files are changed just by
-cloning the repo or installing its packages.
-
-The config resolves the symlink to locate the adjacent `themes/` directory,
-so the SPQR theme needs no separate copy. Do not copy `.zshrc` out of the repo
-on its own. If SPQR is absent, it selects Oh My Zsh's bundled `agnoster` theme.
-If Oh My Zsh itself is absent, it uses a basic zsh prompt and completion instead.
-Both SPQR and agnoster need Powerline glyphs for their intended appearance.
-The SPQR file is an exact copy of the original active theme; its glyph setup
-uses the `en_US.UTF-8` locale, which should be available on the target machine.
-
-fzf 0.48.0 or newer provides Ctrl-R (history search), Ctrl-T (file selection),
-and Alt-C (directory navigation). The config uses `fzf --zsh`, not the older
-`~/.fzf.zsh` integration. Missing fzf or zoxide is simply skipped.
-
-History is saved locally at `~/.zsh_history`, never in the repo. History sharing
-is between sessions on the same machine, not between computers. Commands
-starting with a space are excluded from saved history, but this is not a
-security mechanism for secrets. The `gc` alias deliberately means
-`git checkout`, overriding the git plugin's `git commit` alias.
-
-Optional machine-specific overrides can live in `~/.zshrc.local`, which is
-loaded last and is not part of this repository. No platform override files
-are required yet.
-
-## Bazzite keyboard repeat (Wayland only)
-
-Run explicitly from a terminal in your desktop session, as your regular user:
-
-```sh
-sh scripts/bazzite/keyboard.sh
-```
-
-The script detects GNOME or KDE Plasma 6 and rejects X11 and unsupported
-sessions before changing settings. It sets a 150 ms initial repeat delay and
-approximately 67 repeats per second (GNOME: 15 ms interval; KDE: 67 Hz).
-These settings change held-key repeat, not initial keypress latency. A literal
-zero delay is not the default; edit `delay_ms` in the script if desired, noting
-that individual clients may handle zero differently.
-
-GNOME selects the dconf backend explicitly, including from AppImage terminals,
-uses the keyboard `gsettings` schema, and prints previous values before
-applying changes. To restore those values, use `gsettings set` with the printed
-values and `GSETTINGS_BACKEND=dconf`; `gsettings reset` restores schema defaults
-instead of your old values.
-KDE uses `kwriteconfig6` to update only the repeat keys in the `[Keyboard]`
-group of `kcminputrc`, preserving other settings. Existing configuration is
-backed up to `kcminputrc.before-dotfiles-keyboard`; subsequent runs refuse to
-overwrite that backup. Log out and back in after applying KDE settings.
-
-No sudo, keyd changes, package installation, or automatic shell-startup execution
-is involved. macOS keyboard setup remains a future addition.
-
-## Bazzite Keychron remapping
-
-The Keychron profile maps physical Command to Control and Caps Lock to Super.
-The companion Ghostty bindings provide selection-aware copy and clipboard
-paste; the installer adds the GNOME Caps Lock+T fullscreen launcher shortcut.
-
-Read the [device selection, installation, verification, and rollback
-instructions](packages/bazzite.md#keychron-remapping) before applying:
-
-```sh
-bash scripts/bazzite/apply-bazzite-keyboard.sh --check
-bash scripts/bazzite/apply-bazzite-keyboard.sh
-```
-
-Run as your regular desktop user. The installer invokes sudo for keyd changes,
-retains the first existing config backups, and preserves any existing Ghostty
-startup command and local `config.ghostty` override. It does not change repeat
-settings; use `scripts/bazzite/keyboard.sh` separately for those.
-
-## Bazzite desktop apps and Vicinae (GNOME Wayland)
-
-Desktop apps are listed in `packages/bazzite-desktop-app.txt`. The installer
-enables Bazzite's existing third-party Terra repository (retaining signature
-checks), then requests missing RPMs through `rpm-ostree`. Run it explicitly;
-cloning this repository does not install anything or reboot the machine.
-
-```sh
-bash scripts/bazzite/install-bazzite-apps.sh --check
-bash scripts/bazzite/install-bazzite-apps.sh
-# Reboot if a new deployment was staged, then return to this checkout:
-bash scripts/bazzite/setup-bazzite-vicinae.sh --check
-bash scripts/bazzite/setup-bazzite-vicinae.sh
-```
-
-Vicinae setup merges Adwaita Sans 11 into existing preferences, sets login
-startup and absolute-path launchers, installs a GNOME-version-compatible
-official companion extension, and registers Ctrl+Space. With the Keychron
-remap, that is physical Command+Space. It preserves other shortcuts, removes
-only IBus's conflicting Control+Space trigger, and queues the extension for
-the next login if GNOME cannot load it yet. Existing user-local installs can
-use the setup script without installing a second copy through Terra.
-
-Read [setup, verification, updates, and rollback notes](packages/bazzite.md#vicinae)
-before applying. All Bazzite scripts now live in `scripts/bazzite/`; the older
-keyboard-script paths have moved.
-
-## Structure plan
-
-Add directories when their actual configs are available:
+## Organization
 
 ```text
 dotfiles/
 ├── README.md
-├── packages/
-│   ├── common-cli.Brewfile
-│   ├── macos.Brewfile
-│   ├── bazzite.Brewfile
-│   ├── bazzite-desktop-app.txt
-│   └── bazzite.md              # Desktop apps, Homebrew, and setup notes
 ├── shared/
-│   ├── zellij/config.kdl
-│   ├── zsh/.zshrc
-│   ├── zsh/themes/SPQR.zsh-theme
-
-│   └── ghostty/config          # If settings are genuinely shared
-├── platforms/
-│   ├── macos/
-│   │   └── ghostty/config
-│   └── bazzite/
-│       ├── ghostty/config
-│       ├── keyd/keychron-link.conf
-│       └── vicinae/settings.json
-├── machines/                  # Only for necessary machine-specific exceptions
-└── scripts/
-    └── bazzite/                # Platform installers, settings, and helpers
+│   ├── README.md
+│   ├── packages/Brewfile
+│   ├── zsh/
+│   │   ├── .zshrc
+│   │   └── themes/SPQR.zsh-theme
+│   └── zellij/config.kdl
+├── bazzite/
+│   ├── README.md
+│   ├── packages/
+│   │   ├── Brewfile
+│   │   └── bazzite-desktop-app.txt
+│   ├── config/
+│   │   ├── ghostty/config
+│   │   ├── keyd/keychron-link.conf
+│   │   └── vicinae/settings.json
+│   ├── scripts/
+│   │   ├── install-apps.sh
+│   │   ├── apply-keyboard-remap.sh
+│   │   ├── apply-keyboard-repeat.sh
+│   │   ├── setup-vicinae.sh
+│   │   ├── lib/vicinae-settings.py
+│   │   └── tests/test_vicinae_settings.py
+│   └── docs/
+│       ├── ghostty.md
+│       ├── keyboard.md
+│       └── vicinae.md
+└── macos/
+    ├── README.md
+    └── packages/Brewfile
 ```
 
-Keep portable settings shared, platform-specific settings under `platforms/`,
-and device-specific exceptions under `machines/`. Preserve existing configs
-before extracting shared settings. Config composition depends on each tool;
-this directory structure alone does not merge files.
+Choose the platform first, then the kind of file:
 
-Track software installation separately from config installation. On Bazzite,
-document whether each tool is installed with Homebrew, Flatpak, Distrobox, or
-on the host. Installing keyd configuration under `/etc/keyd/` and managing its
-service requires explicit privileged steps.
+- `packages/` lists software to install and keeps each package manager separate.
+- `config/` contains platform-specific application and device settings.
+- `scripts/` contains commands that install packages or apply settings;
+  `lib/` holds internal helpers and `tests/` holds isolated checks.
+- `docs/` explains prerequisites, verification, troubleshooting, and rollback.
 
-Do not commit credentials, private keys, caches, session state, or backup configs.
+`shared/` holds settings and CLI packages used on both platforms. Both
+platform Brewfiles include `shared/packages/Brewfile`. Shared config paths
+remain stable so an existing `~/.zshrc` symlink keeps working.
+
+Add platform folders only when they have actual content. Keep machine-specific
+overrides local, such as `~/.zshrc.local`; never commit credentials, private
+keys, vault data, caches, session state, or config backups. Package manifests
+and config files are applied separately; the directory layout does not merge
+or install them automatically.

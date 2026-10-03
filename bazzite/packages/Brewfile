@@ -1,4 +1,4 @@
-eval File.read(File.join(__dir__, "common-cli.Brewfile"))
+eval File.read(File.expand_path("../../shared/packages/Brewfile", __dir__))
 
 # Bazzite-only user-space CLI tools.
 brew "rbw"

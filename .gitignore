@@ -1,0 +1,6 @@
+# Generated files and local configuration backups.
+.DS_Store
+__pycache__/
+*.py[cod]
+*.before-dotfiles*
+*.before-mac-layout

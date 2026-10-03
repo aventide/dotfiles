@@ -11,7 +11,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-spec = importlib.util.spec_from_file_location("vicinae_settings", Path(__file__).resolve().parents[1] / "vicinae-settings.py")
+spec = importlib.util.spec_from_file_location("vicinae_settings", Path(__file__).resolve().parents[1] / "lib/vicinae-settings.py")
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 

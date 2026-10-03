@@ -7,6 +7,6 @@ keybind = performable:ctrl+c=copy_to_clipboard
 keybind = ctrl+v=paste_from_clipboard
 
 # Start Zellij in every new Ghostty surface. The installer preserves any
-# existing startup command in config or config.ghostty; see packages/bazzite.md
+# existing startup command in config or config.ghostty; see bazzite/docs/ghostty.md
 # for the local absolute-path override needed by some GUI launch environments.
 command = zellij
