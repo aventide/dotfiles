@@ -12,8 +12,11 @@ dotfiles/
 │   ├── macos.Brewfile
 │   └── bazzite.Brewfile
 └── shared/
-    └── zellij/
-        └── config.kdl
+    ├── zellij/
+    │   └── config.kdl
+    └── zsh/
+        ├── .zshrc
+        └── themes/SPQR.zsh-theme
 ```
 
 The Zellij config includes the embedded SPQR theme, keybindings, and built-in
@@ -75,6 +78,53 @@ clipboard command enabled. If copying fails, check terminal support before
 adding a platform-specific command such as `pbcopy`, `wl-copy`, or `xclip`.
 
 
+## Install zsh configuration
+
+`shared/zsh/.zshrc` is a shared interactive-shell config for macOS and Linux.
+It enables the git plugin and SPQR theme through Oh My Zsh, persistent history
+(50,000 entries), shared history between local sessions, your existing aliases,
+fzf keybindings, and zoxide when installed. NVM, Fabric, and Zellij auto-start
+are not included. Homebrew is discovered using standard macOS/Linux paths when
+it is not already on PATH.
+
+Install Oh My Zsh separately, normally at `~/.oh-my-zsh`, and use a font with
+Powerline glyphs (such as a Nerd Font). A custom Oh My Zsh installation can be
+selected by exporting `ZSH` before starting the shell.
+
+From the repository root, back up an existing `~/.zshrc`, then symlink the config:
+
+```sh
+# Run this only when ~/.zshrc exists; choose an unused backup name.
+mv ~/.zshrc ~/.zshrc.before-dotfiles
+ln -s "$PWD/shared/zsh/.zshrc" "$HOME/.zshrc"
+```
+
+If there is no existing `.zshrc`, skip the `mv` command. Keep the checkout in
+place and open a new zsh session. No active shell files are changed just by
+cloning the repo or installing its packages.
+
+The config resolves the symlink to locate the adjacent `themes/` directory,
+so the SPQR theme needs no separate copy. Do not copy `.zshrc` out of the repo
+on its own. If SPQR is absent, it selects Oh My Zsh's bundled `agnoster` theme.
+If Oh My Zsh itself is absent, it uses a basic zsh prompt and completion instead.
+Both SPQR and agnoster need Powerline glyphs for their intended appearance.
+The SPQR file is an exact copy of the original active theme; its glyph setup
+uses the `en_US.UTF-8` locale, which should be available on the target machine.
+
+fzf 0.48.0 or newer provides Ctrl-R (history search), Ctrl-T (file selection),
+and Alt-C (directory navigation). The config uses `fzf --zsh`, not the older
+`~/.fzf.zsh` integration. Missing fzf or zoxide is simply skipped.
+
+History is saved locally at `~/.zsh_history`, never in the repo. History sharing
+is between sessions on the same machine, not between computers. Commands
+starting with a space are excluded from saved history, but this is not a
+security mechanism for secrets. The `gc` alias deliberately means
+`git checkout`, overriding the git plugin's `git commit` alias.
+
+Optional machine-specific overrides can live in `~/.zshrc.local`, which is
+loaded last and is not part of this repository. No platform override files
+are required yet.
+
 ## Structure plan
 
 Add directories when their actual configs are available:
@@ -89,6 +139,8 @@ dotfiles/
 │   └── bazzite.md              # Future non-Homebrew installation notes
 ├── shared/
 │   ├── zellij/config.kdl
+│   ├── zsh/.zshrc
+│   ├── zsh/themes/SPQR.zsh-theme
 
 │   └── ghostty/config          # If settings are genuinely shared
 ├── platforms/
