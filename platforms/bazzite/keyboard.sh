@@ -16,6 +16,8 @@ rate_hz=67
 
 case ":${XDG_CURRENT_DESKTOP:-}:" in
     *:GNOME:*|*:gnome:*)
+        # AppImage terminals may select keyfile; GNOME uses the dconf backend.
+        export GSETTINGS_BACKEND=dconf
         command -v gsettings >/dev/null 2>&1 || fail 'gsettings is required.'
         schema=org.gnome.desktop.peripherals.keyboard
         # Check every setting before modifying any of them.

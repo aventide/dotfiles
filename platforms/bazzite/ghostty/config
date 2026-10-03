@@ -1,0 +1,12 @@
+# keyd makes physical Command appear as Ctrl before Ghostty receives it.
+# Copy only consumes Ctrl-C when a terminal selection exists. Without a
+# selection, Ctrl-C continues to the shell as the normal interrupt signal.
+keybind = performable:ctrl+c=copy_to_clipboard
+
+# Because keyd makes Command-V and Control-V identical, both paste here.
+keybind = ctrl+v=paste_from_clipboard
+
+# Start Zellij in every new Ghostty surface. The installer preserves any
+# existing startup command in config or config.ghostty; see packages/bazzite.md
+# for the local absolute-path override needed by some GUI launch environments.
+command = zellij

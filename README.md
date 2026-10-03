@@ -18,9 +18,13 @@ dotfiles/
 │   └── zsh/
 │       ├── .zshrc
 │       └── themes/SPQR.zsh-theme
-└── platforms/
-    └── bazzite/
-        └── keyboard.sh
+├── platforms/
+│   └── bazzite/
+│       ├── keyboard.sh
+│       ├── keyd/keychron-link.conf
+│       └── ghostty/config
+└── scripts/
+    └── apply-bazzite-keyboard.sh
 ```
 
 The Zellij config includes the embedded SPQR theme, keybindings, and built-in
@@ -146,9 +150,11 @@ These settings change held-key repeat, not initial keypress latency. A literal
 zero delay is not the default; edit `delay_ms` in the script if desired, noting
 that individual clients may handle zero differently.
 
-GNOME uses the keyboard `gsettings` schema and prints previous values before
+GNOME selects the dconf backend explicitly, including from AppImage terminals,
+uses the keyboard `gsettings` schema, and prints previous values before
 applying changes. To restore those values, use `gsettings set` with the printed
-values; `gsettings reset` restores schema defaults instead of your old values.
+values and `GSETTINGS_BACKEND=dconf`; `gsettings reset` restores schema defaults
+instead of your old values.
 KDE uses `kwriteconfig6` to update only the repeat keys in the `[Keyboard]`
 group of `kcminputrc`, preserving other settings. Existing configuration is
 backed up to `kcminputrc.before-dotfiles-keyboard`; subsequent runs refuse to
@@ -156,6 +162,25 @@ overwrite that backup. Log out and back in after applying KDE settings.
 
 No sudo, keyd changes, package installation, or automatic shell-startup execution
 is involved. macOS keyboard setup remains a future addition.
+
+## Bazzite Keychron remapping
+
+The Keychron profile maps physical Command to Control and Caps Lock to Super.
+The companion Ghostty bindings provide selection-aware copy and clipboard
+paste; the installer adds the GNOME Caps Lock+T fullscreen launcher shortcut.
+
+Read the [device selection, installation, verification, and rollback
+instructions](packages/bazzite.md#keychron-remapping) before applying:
+
+```sh
+bash scripts/apply-bazzite-keyboard.sh --check
+bash scripts/apply-bazzite-keyboard.sh
+```
+
+Run as your regular desktop user. The installer invokes sudo for keyd changes,
+retains the first existing config backups, and preserves any existing Ghostty
+startup command and local `config.ghostty` override. It does not change repeat
+settings; use `platforms/bazzite/keyboard.sh` separately for those.
 
 ## Structure plan
 
@@ -181,9 +206,10 @@ dotfiles/
 │   └── bazzite/
 │       ├── keyboard.sh
 │       ├── ghostty/config
-│       └── keyd/default.conf
+│       └── keyd/keychron-link.conf
 ├── machines/                  # Only for necessary machine-specific exceptions
-└── scripts/                   # Add installation automation when needed
+└── scripts/
+    └── apply-bazzite-keyboard.sh
 ```
 
 Keep portable settings shared, platform-specific settings under `platforms/`,
