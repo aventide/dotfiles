@@ -10,7 +10,8 @@ dotfiles/
 ├── packages/
 │   ├── common-cli.Brewfile
 │   ├── macos.Brewfile
-│   └── bazzite.Brewfile
+│   ├── bazzite.Brewfile
+│   └── bazzite.md
 └── shared/
     ├── zellij/
     │   └── config.kdl
@@ -58,8 +59,9 @@ No cleanup/removal of unlisted packages is requested by these commands.
 Ghostty supports Linux, but its Homebrew cask does not. Install Ghostty on
 Bazzite separately using a suitable Linux installation method. Likewise, keyd
 requires separate host-level installation and service setup; it is not covered
-by the Brewfiles. Document non-Homebrew installation steps in
-`packages/bazzite.md` when those choices are made.
+by the Brewfiles. See [Bazzite setup notes](packages/bazzite.md) for the
+Ghostty AppImage + Homebrew Zellij launcher setup. Apply those steps before
+the first desktop launch to avoid depending on the GUI session's PATH.
 
 ## Install Zellij config
 
@@ -136,7 +138,7 @@ dotfiles/
 │   ├── common-cli.Brewfile
 │   ├── macos.Brewfile
 │   ├── bazzite.Brewfile
-│   └── bazzite.md              # Future non-Homebrew installation notes
+│   └── bazzite.md              # Ghostty AppImage + Homebrew setup notes
 ├── shared/
 │   ├── zellij/config.kdl
 │   ├── zsh/.zshrc
