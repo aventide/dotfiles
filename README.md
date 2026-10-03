@@ -32,7 +32,8 @@ is separate from config installation: these manifests do not install dotfiles,
 Oh My Zsh, or change your login shell.
 
 - `packages/common-cli.Brewfile`: shared user-space CLI tools for macOS and
-  Bazzite Linux: git, zsh, zellij, zoxide, fzf, ripgrep, fd, and jq.
+  Bazzite Linux: git, GitHub CLI (`gh`), zsh, zellij, zoxide, fzf, ripgrep,
+  fd, and jq.
 - `packages/macos.Brewfile`: includes the shared list and adds the Ghostty cask.
 - `packages/bazzite.Brewfile`: includes the shared list, with a place for future
   Bazzite-specific Homebrew formulas. It currently adds no extra packages.
