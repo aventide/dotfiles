@@ -61,6 +61,22 @@ requires separate host-level installation and service setup; it is not covered
 by the Brewfiles. Document non-Homebrew installation steps in
 `packages/bazzite.md` when those choices are made.
 
+## Bazzite GUI command path
+
+Desktop applications do not necessarily inherit the PATH configured by an
+interactive shell. Install the Bazzite environment file so GUI-launched
+applications such as Ghostty can find user-local and Homebrew commands (for
+example, the portable `command = zellij` Ghostty setting):
+
+```sh
+install -Dm644 platforms/bazzite/environment.d/80-user-path.conf \
+  "${XDG_CONFIG_HOME:-$HOME/.config}/environment.d/80-user-path.conf"
+```
+
+Log out and back in after installing or changing this file. Keep paths that
+are specific to a particular machine out of shared application configs; this
+platform environment file is the Bazzite-specific integration point.
+
 ## Install Zellij config
 
 From the repository root, after installing Zellij:
