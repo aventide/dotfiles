@@ -1,0 +1,3 @@
+# Native Bazzite desktop RPMs, installed by scripts/bazzite/install-bazzite-apps.sh.
+# Vicinae is provided by Terra. One RPM name per line; comments are allowed.
+vicinae

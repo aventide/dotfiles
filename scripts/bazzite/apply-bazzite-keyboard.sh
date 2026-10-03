@@ -8,7 +8,7 @@ export GSETTINGS_BACKEND=dconf
 case "${1:-}" in
     "") check_only=false ;;
     --check) check_only=true ;;
-    *) printf '%s\n' "Usage: bash scripts/apply-bazzite-keyboard.sh [--check]" >&2; exit 1 ;;
+    *) printf '%s\n' "Usage: bash scripts/bazzite/apply-bazzite-keyboard.sh [--check]" >&2; exit 1 ;;
 esac
 if (( $# > 1 )); then
     printf '%s\n' "Unexpected arguments." >&2
@@ -19,7 +19,7 @@ if [[ "$OSTYPE" != linux* || "$EUID" == 0 ]]; then
     exit 1
 fi
 
-repo_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+repo_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
 keyd_source="$repo_dir/platforms/bazzite/keyd/keychron-link.conf"
 ghostty_source="$repo_dir/platforms/bazzite/ghostty/config"
 # Keep the legacy target to avoid installing two profiles for the same device.

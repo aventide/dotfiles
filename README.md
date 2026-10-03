@@ -11,6 +11,7 @@ dotfiles/
 │   ├── common-cli.Brewfile
 │   ├── macos.Brewfile
 │   ├── bazzite.Brewfile
+│   ├── bazzite-desktop-app.txt
 │   └── bazzite.md
 ├── shared/
 │   ├── zellij/
@@ -20,11 +21,17 @@ dotfiles/
 │       └── themes/SPQR.zsh-theme
 ├── platforms/
 │   └── bazzite/
-│       ├── keyboard.sh
 │       ├── keyd/keychron-link.conf
-│       └── ghostty/config
+│       ├── ghostty/config
+│       └── vicinae/settings.json
 └── scripts/
-    └── apply-bazzite-keyboard.sh
+    └── bazzite/
+        ├── apply-bazzite-keyboard.sh
+        ├── keyboard.sh
+        ├── install-bazzite-apps.sh
+        ├── setup-bazzite-vicinae.sh
+        ├── vicinae-settings.py
+        └── tests/test_vicinae_settings.py
 ```
 
 The Zellij config includes the embedded SPQR theme, keybindings, and built-in
@@ -42,8 +49,10 @@ Oh My Zsh, or change your login shell.
   Bazzite Linux: git, GitHub CLI (`gh`), zsh, zellij,
   zoxide, fzf, ripgrep, fd, and jq.
 - `packages/macos.Brewfile`: includes the shared list and adds the Ghostty cask.
-- `packages/bazzite.Brewfile`: includes the shared list, with a place for future
-  Bazzite-specific Homebrew formulas. It currently adds no extra packages.
+- `packages/bazzite.Brewfile`: includes the shared list and adds the unofficial
+  Bitwarden CLI `rbw` on Bazzite only. Authentication is configured locally.
+- `packages/bazzite-desktop-app.txt`: native desktop RPMs, currently Vicinae.
+  These are installed separately from Homebrew through the Bazzite scripts.
 
 From the repository root, run the command for your platform:
 
@@ -140,7 +149,7 @@ are required yet.
 Run explicitly from a terminal in your desktop session, as your regular user:
 
 ```sh
-sh platforms/bazzite/keyboard.sh
+sh scripts/bazzite/keyboard.sh
 ```
 
 The script detects GNOME or KDE Plasma 6 and rejects X11 and unsupported
@@ -173,14 +182,41 @@ Read the [device selection, installation, verification, and rollback
 instructions](packages/bazzite.md#keychron-remapping) before applying:
 
 ```sh
-bash scripts/apply-bazzite-keyboard.sh --check
-bash scripts/apply-bazzite-keyboard.sh
+bash scripts/bazzite/apply-bazzite-keyboard.sh --check
+bash scripts/bazzite/apply-bazzite-keyboard.sh
 ```
 
 Run as your regular desktop user. The installer invokes sudo for keyd changes,
 retains the first existing config backups, and preserves any existing Ghostty
 startup command and local `config.ghostty` override. It does not change repeat
-settings; use `platforms/bazzite/keyboard.sh` separately for those.
+settings; use `scripts/bazzite/keyboard.sh` separately for those.
+
+## Bazzite desktop apps and Vicinae (GNOME Wayland)
+
+Desktop apps are listed in `packages/bazzite-desktop-app.txt`. The installer
+enables Bazzite's existing third-party Terra repository (retaining signature
+checks), then requests missing RPMs through `rpm-ostree`. Run it explicitly;
+cloning this repository does not install anything or reboot the machine.
+
+```sh
+bash scripts/bazzite/install-bazzite-apps.sh --check
+bash scripts/bazzite/install-bazzite-apps.sh
+# Reboot if a new deployment was staged, then return to this checkout:
+bash scripts/bazzite/setup-bazzite-vicinae.sh --check
+bash scripts/bazzite/setup-bazzite-vicinae.sh
+```
+
+Vicinae setup merges Adwaita Sans 11 into existing preferences, sets login
+startup and absolute-path launchers, installs a GNOME-version-compatible
+official companion extension, and registers Ctrl+Space. With the Keychron
+remap, that is physical Command+Space. It preserves other shortcuts, removes
+only IBus's conflicting Control+Space trigger, and queues the extension for
+the next login if GNOME cannot load it yet. Existing user-local installs can
+use the setup script without installing a second copy through Terra.
+
+Read [setup, verification, updates, and rollback notes](packages/bazzite.md#vicinae)
+before applying. All Bazzite scripts now live in `scripts/bazzite/`; the older
+keyboard-script paths have moved.
 
 ## Structure plan
 
@@ -193,7 +229,8 @@ dotfiles/
 │   ├── common-cli.Brewfile
 │   ├── macos.Brewfile
 │   ├── bazzite.Brewfile
-│   └── bazzite.md              # Ghostty AppImage + Homebrew setup notes
+│   ├── bazzite-desktop-app.txt
+│   └── bazzite.md              # Desktop apps, Homebrew, and setup notes
 ├── shared/
 │   ├── zellij/config.kdl
 │   ├── zsh/.zshrc
@@ -204,12 +241,12 @@ dotfiles/
 │   ├── macos/
 │   │   └── ghostty/config
 │   └── bazzite/
-│       ├── keyboard.sh
 │       ├── ghostty/config
-│       └── keyd/keychron-link.conf
+│       ├── keyd/keychron-link.conf
+│       └── vicinae/settings.json
 ├── machines/                  # Only for necessary machine-specific exceptions
 └── scripts/
-    └── apply-bazzite-keyboard.sh
+    └── bazzite/                # Platform installers, settings, and helpers
 ```
 
 Keep portable settings shared, platform-specific settings under `platforms/`,
