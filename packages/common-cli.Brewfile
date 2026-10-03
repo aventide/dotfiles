@@ -1,7 +1,6 @@
 # User-space CLI tools shared by macOS and Bazzite Linux.
 brew "git"
 brew "gh"
-brew "bitwarden-cli"
 brew "zsh"
 brew "zellij"
 brew "zoxide"
