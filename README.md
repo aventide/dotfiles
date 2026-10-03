@@ -12,12 +12,15 @@ dotfiles/
 │   ├── macos.Brewfile
 │   ├── bazzite.Brewfile
 │   └── bazzite.md
-└── shared/
-    ├── zellij/
-    │   └── config.kdl
-    └── zsh/
-        ├── .zshrc
-        └── themes/SPQR.zsh-theme
+├── shared/
+│   ├── zellij/
+│   │   └── config.kdl
+│   └── zsh/
+│       ├── .zshrc
+│       └── themes/SPQR.zsh-theme
+└── platforms/
+    └── bazzite/
+        └── keyboard.sh
 ```
 
 The Zellij config includes the embedded SPQR theme, keybindings, and built-in
@@ -128,6 +131,32 @@ Optional machine-specific overrides can live in `~/.zshrc.local`, which is
 loaded last and is not part of this repository. No platform override files
 are required yet.
 
+## Bazzite keyboard repeat (Wayland only)
+
+Run explicitly from a terminal in your desktop session, as your regular user:
+
+```sh
+sh platforms/bazzite/keyboard.sh
+```
+
+The script detects GNOME or KDE Plasma 6 and rejects X11 and unsupported
+sessions before changing settings. It sets a 150 ms initial repeat delay and
+approximately 67 repeats per second (GNOME: 15 ms interval; KDE: 67 Hz).
+These settings change held-key repeat, not initial keypress latency. A literal
+zero delay is not the default; edit `delay_ms` in the script if desired, noting
+that individual clients may handle zero differently.
+
+GNOME uses the keyboard `gsettings` schema and prints previous values before
+applying changes. To restore those values, use `gsettings set` with the printed
+values; `gsettings reset` restores schema defaults instead of your old values.
+KDE uses `kwriteconfig6` to update only the repeat keys in the `[Keyboard]`
+group of `kcminputrc`, preserving other settings. Existing configuration is
+backed up to `kcminputrc.before-dotfiles-keyboard`; subsequent runs refuse to
+overwrite that backup. Log out and back in after applying KDE settings.
+
+No sudo, keyd changes, package installation, or automatic shell-startup execution
+is involved. macOS keyboard setup remains a future addition.
+
 ## Structure plan
 
 Add directories when their actual configs are available:
@@ -150,6 +179,7 @@ dotfiles/
 │   ├── macos/
 │   │   └── ghostty/config
 │   └── bazzite/
+│       ├── keyboard.sh
 │       ├── ghostty/config
 │       └── keyd/default.conf
 ├── machines/                  # Only for necessary machine-specific exceptions
