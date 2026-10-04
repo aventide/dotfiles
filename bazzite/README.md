@@ -37,7 +37,7 @@ installation as described in the keyboard guide.
 ## Desktop apps
 
 `bazzite/packages/bazzite-desktop-app.txt` tracks native desktop RPMs separately
-from the CLI Brewfile. It currently lists `vicinae`. Future entries must be RPM
+from the CLI Brewfile. It lists `vicinae` and `helium-browser-bin`. Entries must be RPM
 package names available from the enabled host repositories, not Flatpak IDs,
 Homebrew formulas, URLs, or shell commands.
 
@@ -61,6 +61,11 @@ A new deployment generally needs a reboot; the script never reboots or uses
 `--apply-live` automatically. Reboot when instructed, then continue with
 [Vicinae setup](docs/vicinae.md).
 Native RPMs are updated through the normal Bazzite deployment/update process.
+
+[Terra's Helium package](https://github.com/terrapkg/packages/tree/frawhide/anda/apps/helium-browser-bin)
+includes its desktop launcher and browser icon for a fresh setup. Install it
+with the desktop installer above and reboot if a new deployment was staged.
+Installing the package does not change the default browser.
 
 To remove a deliberately layered package, use `sudo rpm-ostree uninstall NAME`
 and reboot; do not use this for packages built into the base image. See the

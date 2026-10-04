@@ -1,3 +1,4 @@
 # Native Bazzite desktop RPMs, installed by bazzite/scripts/install-apps.sh.
-# Vicinae is provided by Terra. One RPM name per line; comments are allowed.
+# These apps are provided by Terra. One RPM name per line; comments are allowed.
 vicinae
+helium-browser-bin

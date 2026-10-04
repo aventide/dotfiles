@@ -2,3 +2,4 @@ eval File.read(File.expand_path("../../shared/packages/Brewfile", __dir__))
 
 # Ghostty's Homebrew cask is available on macOS only.
 cask "ghostty"
+cask "helium-browser"

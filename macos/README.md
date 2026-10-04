@@ -9,7 +9,8 @@ brew bundle --file=macos/packages/Brewfile
 ```
 
 This includes the [shared CLI packages](../shared/packages/Brewfile) and the
-Ghostty cask. It does not remove other installed packages or apply configs.
+Ghostty and [Helium browser](https://formulae.brew.sh/cask/helium-browser)
+casks. It does not remove other installed packages or apply configs.
 
 ## Configure the shell and terminal
 
