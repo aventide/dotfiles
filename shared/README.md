@@ -7,8 +7,8 @@ from the repository root.
 ## CLI packages
 
 `shared/packages/Brewfile` contains git, GitHub CLI (`gh`), zsh, zellij,
-zoxide, fzf, ripgrep, fd, jq, yazi, and Codex CLI (the `codex` cask).
-Both platform Brewfiles include this list.
+zoxide, fzf, ripgrep, fd, jq, yazi, Codex CLI (the `codex` cask), and Claude Code
+(the `claude-code` cask). Both platform Brewfiles include this list.
 To install only the shared tools, with Homebrew already installed:
 
 ```sh
