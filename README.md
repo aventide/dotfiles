@@ -5,7 +5,7 @@ your platform's guide; it includes the shared setup in the appropriate order.
 
 - [Bazzite setup](bazzite/README.md)
 - [macOS setup](macos/README.md)
-- [Shared Zsh, SPQR, and Zellij setup](shared/README.md)
+- [Shared Zsh, SPQR, Zellij, and Claude Code setup](shared/README.md)
 
 Run documented commands from the repository root unless stated otherwise.
 Homebrew must already be installed. Cloning the repo does not apply settings.
@@ -18,6 +18,7 @@ dotfiles/
 ├── shared/
 │   ├── README.md
 │   ├── packages/Brewfile
+│   ├── claude/settings.json
 │   ├── zsh/
 │   │   ├── .zshrc
 │   │   └── themes/SPQR.zsh-theme

@@ -43,6 +43,26 @@ clipboard command enabled. If copying fails, check terminal support before
 adding a platform-specific command such as `pbcopy`, `wl-copy`, or `xclip`.
 
 
+## Install Claude Code settings
+
+`shared/claude/settings.json` is the user-level Claude Code config. It turns
+off attribution: no `Co-Authored-By` trailer on commits and no "Generated with
+Claude Code" line in pull request descriptions. `attribution` is the current
+setting; `includeCoAuthoredBy` covers older Claude Code versions.
+
+From the repository root:
+
+```sh
+mkdir -p ~/.claude
+cp -i shared/claude/settings.json ~/.claude/settings.json
+```
+
+If `~/.claude/settings.json` already exists, merge the keys by hand instead
+of overwriting it. The file is copied rather than symlinked because Claude
+Code writes its own changes to it. It applies to every project on the machine;
+a repository's `.claude/settings.json` can still override it. Start a new
+Claude Code session to pick it up.
+
 ## Install zsh configuration
 
 `shared/zsh/.zshrc` is a shared interactive-shell config for macOS and Linux.
