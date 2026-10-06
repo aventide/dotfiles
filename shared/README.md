@@ -69,8 +69,10 @@ Claude Code session to pick it up.
 It enables the git plugin and SPQR theme through Oh My Zsh, persistent history
 (50,000 entries), shared history between local sessions, your existing aliases,
 fzf keybindings, and zoxide when installed. NVM, Fabric, and Zellij auto-start
-are not included. Homebrew is discovered using standard macOS/Linux paths when
-it is not already on PATH.
+are not included. Homebrew is discovered using standard macOS/Linux paths. On
+macOS it is always moved ahead of `/usr/bin`, even if an installer already added
+it to PATH; on Linux it is added only when missing, keeping the distro's
+ordering. `~/.local/bin` comes before Homebrew.
 
 Install Oh My Zsh separately, normally at `~/.oh-my-zsh`, and use a font with
 Powerline glyphs (such as a Nerd Font). A custom Oh My Zsh installation can be

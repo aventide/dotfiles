@@ -2,27 +2,37 @@
 typeset -g DOTFILES_ZSH_DIR="${${(%):-%x}:A:h}"
 typeset -g DOTFILES_ROOT="${DOTFILES_ZSH_DIR:h:h}"
 
-typeset -U path
+typeset -U path fpath
+
+# Add Homebrew's bin dirs to PATH. Set directly rather than `eval "$(brew shellenv)"`
+# to avoid starting brew on every new shell.
+_dotfiles_brew_prepend() {
+  export HOMEBREW_PREFIX=$1
+  path=($1/bin $1/sbin $path)
+  fpath=($1/share/zsh/site-functions $fpath)
+}
+case "$OSTYPE" in
+  darwin*)
+    # Always prepend so Brewfile tools (git, zsh, ...) beat Apple's /usr/bin versions,
+    # even if already on PATH: the .pkg installer adds it after /usr/bin.
+    if [[ -x /opt/homebrew/bin/brew ]]; then
+      _dotfiles_brew_prepend /opt/homebrew
+    elif [[ -x /usr/local/bin/brew ]]; then
+      _dotfiles_brew_prepend /usr/local
+    fi
+    ;;
+  linux*)
+    # Add only if missing; otherwise keep the distro's ordering.
+    if ! (( $+commands[brew] )) && [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+      _dotfiles_brew_prepend /home/linuxbrew/.linuxbrew
+    fi
+    ;;
+esac
+unfunction _dotfiles_brew_prepend
+
+# Personal scripts in ~/.local/bin take priority over Homebrew.
 path=("$HOME/.local/bin" $path)
 export PATH
-
-# Discover Homebrew only when it is not already on PATH.
-if ! (( $+commands[brew] )); then
-  case "$OSTYPE" in
-    darwin*)
-      if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-      elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-      fi
-      ;;
-    linux*)
-      if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-      fi
-      ;;
-  esac
-fi
 
 export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 ZSH_CUSTOM="$DOTFILES_ZSH_DIR"
