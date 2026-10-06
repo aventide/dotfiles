@@ -6,7 +6,7 @@ desktop user. Individual installers request sudo when required.
 ## Setup order
 
 1. [Install CLI packages](#cli-packages).
-2. Apply the [shared Zsh, SPQR, and Zellij setup](../shared/README.md).
+2. Run `./setup.sh` to install the [shared Zsh, SPQR, and Zellij configs](../shared/README.md#install-the-configs).
 3. Install Ghostty separately and [verify its Zellij launcher](docs/ghostty.md)
    before relying on a desktop launch.
 4. Follow the [keyboard guide](docs/keyboard.md) for keyd prerequisites,
@@ -111,6 +111,7 @@ systemd, or vault services:
 Shell syntax can also be checked without applying settings:
 
 ```sh
+bash -n setup.sh
 bash -n bazzite/scripts/install-apps.sh
 bash -n bazzite/scripts/apply-keyboard-remap.sh
 bash -n bazzite/scripts/setup-vicinae.sh

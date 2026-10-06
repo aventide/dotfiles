@@ -8,13 +8,16 @@ your platform's guide; it includes the shared setup in the appropriate order.
 - [Shared Zsh, SPQR, Zellij, and Claude Code setup](shared/README.md)
 
 Run documented commands from the repository root unless stated otherwise.
-Homebrew must already be installed. Cloning the repo does not apply settings.
+Homebrew must already be installed. Cloning the repo does not apply settings;
+`./setup.sh` copies the shared configs into place (see `./setup.sh --help`),
+after which the clone is no longer needed.
 
 ## Organization
 
 ```text
 dotfiles/
 ├── README.md
+├── setup.sh
 ├── shared/
 │   ├── README.md
 │   ├── packages/Brewfile
@@ -57,11 +60,11 @@ Choose the platform first, then the kind of file:
 - `docs/` explains prerequisites, verification, troubleshooting, and rollback.
 
 `shared/` holds settings and CLI packages used on both platforms. Both
-platform Brewfiles include `shared/packages/Brewfile`. Shared config paths
-remain stable so an existing `~/.zshrc` symlink keeps working.
+platform Brewfiles include `shared/packages/Brewfile`. `setup.sh` copies the
+shared configs into your home directory, backing up anything it replaces.
 
 Add platform folders only when they have actual content. Keep machine-specific
 overrides local, such as `~/.zshrc.local`; never commit credentials, private
 keys, vault data, caches, session state, or config backups. Package manifests
-and config files are applied separately; the directory layout does not merge
-or install them automatically.
+and platform configs are applied separately by their own commands; `setup.sh`
+installs only the shared configs (and runs `brew bundle` when asked).

@@ -1,6 +1,5 @@
-# Resolve the repository location even when ~/.zshrc is a symlink.
-typeset -g DOTFILES_ZSH_DIR="${${(%):-%x}:A:h}"
-typeset -g DOTFILES_ROOT="${DOTFILES_ZSH_DIR:h:h}"
+# Installed by the dotfiles setup.sh; re-running it replaces this file (after a
+# backup). Put machine-specific changes in ~/.zshrc.local instead.
 
 typeset -U path fpath
 
@@ -35,9 +34,8 @@ path=("$HOME/.local/bin" $path)
 export PATH
 
 export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
-ZSH_CUSTOM="$DOTFILES_ZSH_DIR"
 ZSH_THEME="SPQR"
-[[ -r "$ZSH_CUSTOM/themes/SPQR.zsh-theme" ]] || ZSH_THEME="agnoster"
+[[ -r "${ZSH_CUSTOM:-$ZSH/custom}/themes/SPQR.zsh-theme" ]] || ZSH_THEME="agnoster"
 plugins=(git)
 
 if [[ -r "$ZSH/oh-my-zsh.sh" ]]; then
