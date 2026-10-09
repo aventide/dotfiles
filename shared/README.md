@@ -8,7 +8,7 @@ from the repository root.
 
 `shared/packages/Brewfile` contains git, GitHub CLI (`gh`), zsh, zellij,
 zoxide, fzf, ripgrep, fd, jq, yazi, Neovim (`nvim`), FFmpeg, Codex CLI (the
-`codex` cask), and Claude Code (the `claude-code` cask). Both platform
+`codex` cask), and Claude Code (the `claude-code@latest` cask). Both platform
 Brewfiles include this list.
 To install only the shared tools, with Homebrew already installed:
 
