@@ -28,14 +28,16 @@ version installed by Homebrew.
 
 ## Install Zellij config
 
-From the repository root, after installing Zellij:
+From the repository root, after installing Zellij, back up an existing config
+(skip the `mv` if there is none), then symlink it:
 
 ```sh
 mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/zellij"
-cp -i shared/zellij/config.kdl "${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl"
+mv "${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl" "${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl.before-dotfiles"
+ln -s "$PWD/shared/zellij/config.kdl" "${XDG_CONFIG_HOME:-$HOME/.config}/zellij/config.kdl"
 ```
 
-Back up an existing config first. `cp -i` asks before overwriting it.
+Keep the checkout in place; `git pull` then updates the live config.
 Start a fresh Zellij session after installation.
 
 Clipboard copying uses the terminal's OSC 52 support, with no OS-specific
@@ -50,18 +52,23 @@ off attribution: no `Co-Authored-By` trailer on commits and no "Generated with
 Claude Code" line in pull request descriptions. `attribution` is the current
 setting; `includeCoAuthoredBy` covers older Claude Code versions.
 
-From the repository root:
+From the repository root, back up an existing file (skip the `mv` if there
+is none), then symlink it:
 
 ```sh
 mkdir -p ~/.claude
-cp -i shared/claude/settings.json ~/.claude/settings.json
+mv ~/.claude/settings.json ~/.claude/settings.json.before-dotfiles
+ln -s "$PWD/shared/claude/settings.json" ~/.claude/settings.json
 ```
 
-If `~/.claude/settings.json` already exists, merge the keys by hand instead
-of overwriting it. The file is copied rather than symlinked because Claude
-Code writes its own changes to it. It applies to every project on the machine;
-a repository's `.claude/settings.json` can still override it. Start a new
-Claude Code session to pick it up.
+Any keys only in the backup, such as a chosen model or theme, are dropped;
+re-add them through Claude Code if you want them. Claude Code writes its own
+changes to this file (for example via `/model`, `/config`, or permission
+prompts), so with the symlink those edits appear in `git status`. Review them
+before committing, and keep machine-specific choices out of the repo. It
+applies to every project on the machine; a repository's
+`.claude/settings.json` can still override it. Start a new Claude Code session
+to pick it up.
 
 ## Install global agent instructions
 
