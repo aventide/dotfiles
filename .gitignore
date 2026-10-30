@@ -4,3 +4,11 @@ __pycache__/
 *.py[cod]
 *.before-dotfiles*
 *.before-mac-layout
+
+# Agent runtime state and credentials; only shared/agents and shared/claude/settings.json are tracked.
+.claude.json
+.credentials.json
+auth.json
+history.jsonl
+*.sqlite
+*.sqlite-*

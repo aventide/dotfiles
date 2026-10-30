@@ -63,6 +63,28 @@ Code writes its own changes to it. It applies to every project on the machine;
 a repository's `.claude/settings.json` can still override it. Start a new
 Claude Code session to pick it up.
 
+## Install global agent instructions
+
+`shared/agents/AGENTS.md` holds user-level instructions for every project,
+shared by Claude Code and Codex. Both tools read the same file through
+symlinks, so edits land in the repo immediately.
+
+From the repository root, after checking that neither destination exists
+(back up and move aside any that do):
+
+```sh
+mkdir -p ~/.claude ~/.codex
+ln -s "$PWD/shared/agents/AGENTS.md" ~/.claude/CLAUDE.md
+ln -s "$PWD/shared/agents/AGENTS.md" ~/.codex/AGENTS.md
+```
+
+Start a new session in either tool to pick it up. Keep the checkout in place.
+This repository is public, so keep the file to general preferences.
+Project-specific instructions belong in each project's own `AGENTS.md` or
+`CLAUDE.md`, and skills live in the separate `agent-skills` repository.
+Codex's `~/.codex/config.toml` is not tracked: it holds machine-specific
+project trust paths and Codex rewrites it.
+
 ## Install zsh configuration
 
 `shared/zsh/.zshrc` is a shared interactive-shell config for macOS and Linux.
